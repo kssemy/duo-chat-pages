@@ -109,8 +109,8 @@
   };
 
   input.oninput = (event) => {
-    input.style.height = "48px";
-    input.style.height = Math.min(input.scrollHeight, 180) + "px";
+    input.style.height = "30px";
+    input.style.height = Math.min(input.scrollHeight, 144) + "px";
     $("send").disabled = !ready || pending || !input.value.trim();
     if (!event.isTrusted || !ready || pending) return;
     clearTimeout(typingIdleTimer);
