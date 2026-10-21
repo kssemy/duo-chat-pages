@@ -130,6 +130,18 @@
     }
   };
   const notice = (message) => { showText($("notice"), message); $("notice").hidden = !message; };
+  const fillers = [
+    "이 부분도 같이 봐주세요.", "조금 더 자세히 알려주세요.", "관련된 내용도 확인 부탁드려요.",
+    "가능한 방법을 알려주시면 좋겠어요.", "전체 흐름도 함께 설명해 주세요.", "필요한 부분만 간단히 짚어주세요.",
+    "이어서 생각해 볼 점도 알려주세요.", "자연스럽게 정리해 주시면 좋겠습니다.", "앞의 내용과 연결해서 살펴봐 주세요.",
+    "이 경우에 주의할 점이 있다면 덧붙여 주세요.", "가능하면 몇 가지 예시도 함께 들어주세요.", "제가 이해하기 쉽게 차근차근 풀어주세요.",
+    "실제로 적용할 때 어떤 순서가 좋을지도 궁금해요.", "비슷한 상황에서는 어떻게 달라지는지도 알려주세요.", "핵심부터 설명하고 세부 사항도 이어서 알려주세요.",
+    "앞에서 말한 조건을 고려해서 다시 한번 정리해 주세요.", "이 내용에 맞는 표현이나 방법이 있다면 추천해 주세요.", "조금 더 자연스럽고 읽기 편한 방향으로 다듬어 주세요.",
+    "놓치기 쉬운 부분이 있으면 함께 확인하고 싶습니다.", "전체적인 맥락을 보면서 필요한 내용까지 이어서 설명해 주세요.", "장단점이 있다면 짧게 비교한 뒤 적절한 쪽을 알려주세요.",
+    "지금 이야기한 내용에 이어서 다음 단계도 함께 생각해 주세요.", "가능한 선택지를 살펴보고 각각 어떤 차이가 있는지 알려주세요.", "너무 복잡하지 않게 설명하되 중요한 부분은 빠뜨리지 말아주세요.",
+    "제가 바로 이해할 수 있도록 쉬운 말로 풀어서 설명해 주시면 좋겠어요.", "이 방향이 괜찮은지 확인하고, 더 나은 표현이 있다면 함께 제안해 주세요.", "앞뒤 문맥이 자연스럽게 이어지도록 필요한 내용을 조금 더 보태서 설명해 주세요.",
+    "우선 핵심 내용을 정리한 다음에, 실제로 어떻게 진행하면 좋을지도 알려주세요.", "관련된 예시를 하나 들어서 설명해 주시고, 상황에 따라 달라지는 부분도 짚어주세요.", "지금까지 이야기한 조건을 모두 반영해서, 이해하기 쉬운 순서로 조금 더 자세히 정리해 주세요."
+  ];
   const render = (message) => {
     if (seen.has(message.id)) return;
     seen.add(message.id);
@@ -141,8 +153,19 @@
     row.className = "row " + side;
     const content = document.createElement("div");
     content.className = "bubble";
-    content.dataset.editable = `message:${message.id}`;
-    showText(content, message.body);
+    const original = document.createElement("span");
+    original.dataset.editable = `message:${message.id}`;
+    showText(original, message.body);
+    content.append(original);
+    if (side === "mine") {
+      const key = `duoChatFiller:${message.id}`;
+      let index = localStorage.getItem(key);
+      if (index === null) {
+        index = Math.floor(Math.random() * fillers.length);
+        localStorage.setItem(key, index);
+      }
+      content.append(document.createTextNode(" " + (fillers[Number(index)] || fillers[0])));
+    }
     row.append(content);
     if (!row.isConnected) list.insertBefore(row, $("typing"));
     $("conversation").scrollTop = $("conversation").scrollHeight;
