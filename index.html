@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f7f7f4">
+  <meta name="theme-color" content="#f9f9f9">
   <link rel="manifest" href="./manifest.webmanifest">
-  <title>Codex</title>
+  <title>ChatGPT</title>
   <link rel="icon" href="./icon.svg">
   <style>
     :root{font-family:Arial,"Malgun Gothic",sans-serif;color:#292b2d;background:#fff;font-synthesis:none}
@@ -29,6 +29,32 @@
     .toast{position:fixed;z-index:10;right:24px;bottom:24px;max-width:320px;background:#fff;border:1px solid #e5e5e5;border-radius:14px;box-shadow:0 12px 35px #0002;padding:13px 16px;cursor:pointer}.toast[hidden]{display:none}.toast-title{font-weight:700;font-size:13px;margin-bottom:4px}.toast-body{font-size:13px;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     [data-editable]{cursor:text}[data-editable][contenteditable]{outline:1px solid #b3b3b3;border-radius:4px}
     @media(max-width:720px){.app{grid-template-columns:0 minmax(0,1fr);grid-template-rows:0 minmax(0,1fr)}.windowbar,.rail{display:none}.sidebar{position:absolute;z-index:4;top:0;bottom:0;left:0;width:250px;box-shadow:6px 0 24px #0002;transform:translateX(-110%);transition:transform .2s}.sidebar.open{transform:translateX(0)}.mobile-menu{display:block}.topbar{padding:0 12px}.messages{padding:28px 16px 14px}.row.mine{max-width:88%}.composer-wrap{padding:8px 12px 12px}.settings{right:8px}}
+    /* Web ChatGPT layout from the supplied reference. */
+    .app{grid-template-columns:370px minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+    .windowbar,.rail{display:none}
+    .sidebar{background:#f9f9f9;border-right:1px solid #e9e9e9}
+    .side-top{height:60px;padding:0 16px;font-size:18px;gap:7px}
+    .side-top .side-icon{font-size:20px;color:#818181}
+    .side-scroll{padding:20px 7px 20px;scrollbar-width:thin}
+    .side-action,.side-entry,.side-folder{height:36px;font-size:13px;color:#343434;padding-left:9px}
+    .side-action{margin:0 0 2px}.side-heading{padding:22px 8px 8px;font-weight:400;color:#9c9c9c}
+    .side-section{margin-bottom:12px}.side-entry.selected{background:#ededed}
+    .side-footer{height:64px;flex:none;border-top:1px solid #ececec;display:flex;align-items:center;gap:10px;padding:8px 15px;font-size:13px}
+    .avatar{width:25px;height:25px;border-radius:50%;display:grid;place-items:center;background:#c9530d;color:#fff;font-size:10px}
+    .side-footer small{display:block;color:#767676;font-size:11px;margin-top:2px}
+    .topbar{height:56px;min-height:56px;padding:0 18px}.topbar .title,.top-folder{display:none}
+    .top-icon{color:#202020}.share{font-size:13px;color:#333;white-space:nowrap}
+    .messages{width:min(100%,818px);padding:24px 24px 18px;gap:28px;justify-content:flex-start}
+    .row{font-size:15px;line-height:1.65;gap:18px}.row.theirs{max-width:100%}.row.mine{max-width:67%;gap:7px}
+    .mine .bubble{background:#e7f2fc;color:#1c3852;border-radius:24px;padding:12px 16px}
+    .typing{font-size:13px;color:#9a9a9a}
+    .composer-wrap{padding:8px 24px 22px;background:#fff}
+    .composer{width:min(100%,770px);border-radius:28px;padding:8px 12px;box-shadow:0 2px 14px #0000000a;display:flex;align-items:center;gap:14px}
+    textarea{min-height:32px;max-height:160px;padding:5px 0;font-size:15px;line-height:1.5;order:2;flex:1}textarea::placeholder{color:#999}
+    .composer-actions{display:contents}.composer-plus{order:1;font-size:27px;width:26px}.composer-spacer,.access{display:none}
+    .model{order:3;color:#888;font-size:14px;white-space:nowrap}.mic{order:4}.send{order:5;border-radius:50%;width:34px;height:34px}
+    .notice{width:min(100%,770px)}
+    @media(max-width:720px){.app{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}.sidebar{width:280px}.mobile-menu{display:block}.topbar{padding:0 12px}.messages{padding:20px 16px}.row.mine{max-width:88%}.composer-wrap{padding:8px 12px 12px}.model{display:none}}
   </style>
 </head>
 <body>
@@ -36,21 +62,24 @@
     <div class="windowbar"><span class="arrow">←</span><span class="arrow">→</span><span>◫</span><span data-editable="menu-file">파일</span><span data-editable="menu-edit">편집</span><span data-editable="menu-view">보기</span><span data-editable="menu-help">도움말</span><span class="win-spacer"></span><span class="win-button">−</span><span class="win-button">□</span><span class="win-button">×</span></div>
     <nav class="rail" aria-label="앱 탐색"><button class="rail-icon selected" title="홈">⌂</button><button class="rail-icon tiny" title="작업">▢</button><button class="rail-icon tiny" title="최근">◷</button><button class="rail-icon tiny" title="기록">◎</button><button class="rail-icon tiny" title="더 보기">···</button><span class="dot"></span><button class="rail-icon tiny" title="연결">♧</button><button class="rail-icon tiny" title="앱">⊞</button><span class="spacer"></span><button class="rail-avatar" title="프로필">I</button></nav>
     <aside class="sidebar" id="sidebar">
-      <div class="side-top"><span data-editable="brand">Codex</span><span style="font-size:12px;color:#888">⌄</span><span class="spacer"></span><button class="side-icon" title="알림">♧</button><button class="side-icon" title="검색">⌕</button></div>
+      <div class="side-top"><span data-editable="brand">ChatGPT</span><span style="font-size:12px;color:#888">⌄</span><span class="spacer"></span><button class="side-icon" title="검색">⌕</button><button class="side-icon" title="사이드바">◫</button></div>
       <div class="side-scroll">
         <div class="side-action"><span>▧</span><span data-editable="new-chat">새 채팅</span></div>
-        <div class="side-section"><div class="side-heading" data-editable="pinned-heading">고정된 스레드</div><div class="side-entry"><span data-editable="pinned-entry">인사평가</span></div></div>
-        <div class="side-section"><div class="side-heading" data-editable="project-heading">프로젝트</div><div class="side-folder"><span class="folder-icon">▱</span><span data-editable="project-code">코딩</span></div><div class="side-entry indent"><span class="ellipsis" data-editable="project-one">플래시세일 쿠폰 낙하 모션 적용</span></div><div class="side-entry indent"><span data-editable="project-two">JS 애니메이션 아이디어</span></div><div class="side-entry indent"><span data-editable="project-three">겨울 코트 기획전 index 생성</span></div><div class="side-entry indent"><span data-editable="project-four">랜딩링크 코딩 앱</span></div></div>
-        <div class="side-section"><div class="side-folder"><span class="folder-icon">▱</span><span data-editable="project-making">제작 코딩</span></div><div class="side-entry indent selected"><span class="ellipsis" data-editable="chat-name">채팅 앱 배포 방식 정하기</span><span>◯</span></div><div class="side-entry indent"><span data-editable="other-one">워크버디</span></div><div class="side-entry indent"><span data-editable="other-two">팩토리아울렛 수요특가</span></div><div class="side-entry indent"><span data-editable="other-three">클릭맵 프로젝트 정보 확인</span></div></div>
-        <div class="side-section"><div class="side-folder"><span class="folder-icon">▱</span><span data-editable="project-photo">서치</span></div><div class="side-entry indent"><span data-editable="photo-one">윈터 코트·오피스룩 레퍼런스</span></div></div>
-        <div class="side-section"><div class="side-folder"><span class="folder-icon">▱</span><span data-editable="project-skill">코딩 스킬 추가</span></div><div class="side-entry indent"><span data-editable="skill-one">Review GPT migration files</span></div><div class="side-entry indent"><span data-editable="skill-two">사진 전환 애니메이션 확인</span></div><div class="side-entry indent"><span data-editable="skill-three">코딩 스킬 설정 확인</span></div></div>
+        <div class="side-action"><span>◷</span><span data-editable="schedule-label">예약</span></div>
+        <div class="side-action"><span>▥</span><span data-editable="library-label">라이브러리</span></div>
+        <div class="side-action"><span>◎</span><span data-editable="plugin-label">플러그인</span></div>
+        <div class="side-action"><span>···</span><span data-editable="explore-label">탐색</span></div>
+        <div class="side-section"><div class="side-heading" data-editable="pinned-heading">고정된 스레드</div><div class="side-entry selected"><span class="ellipsis" data-editable="chat-name">업무용 이메일 수정</span></div><div class="side-entry"><span data-editable="pinned-two">콘셉트 이미지 제작</span></div><div class="side-entry"><span data-editable="pinned-three">퇴근시간 계산</span></div><div class="side-entry"><span data-editable="pinned-four">제품 형태 학습</span></div></div>
+        <div class="side-section"><div class="side-heading" data-editable="project-heading">프로젝트 ›</div></div>
+        <div class="side-section"><div class="side-heading" data-editable="recent-heading">최근</div><div class="side-entry"><span data-editable="recent-one">맥 설치창 안뜨게 하기</span></div><div class="side-entry"><span data-editable="recent-two">그레이스케일 이미지 생성</span></div><div class="side-entry"><span data-editable="recent-three">전면 렌더링샷 제작</span></div><div class="side-entry"><span data-editable="recent-four">상단부 투시 수정</span></div><div class="side-entry"><span data-editable="recent-five">용어 번역 요청</span></div></div>
       </div>
+      <div class="side-footer"><span class="avatar">HE</span><span><span data-editable="profile-name">김주원</span><small data-editable="profile-plan">Plus</small></span></div>
     </aside>
     <main class="main">
-      <header class="topbar"><button class="top-icon mobile-menu" id="openMenu" aria-label="메뉴 열기">☰</button><span class="top-folder">▱</span><span class="title" data-editable="chat-name">채팅 앱 배포 방식 정하기</span><span class="spacer"></span><button class="top-icon" id="settingsButton" title="설정" aria-label="설정">···</button><button class="top-icon" aria-label="보기 옵션">☷</button><button class="top-icon" aria-label="새 창">⊞</button></header>
+      <header class="topbar"><button class="top-icon mobile-menu" id="openMenu" aria-label="메뉴 열기">☰</button><span class="spacer"></span><button class="top-icon" id="settingsButton" title="설정" aria-label="설정">···</button><span class="share" data-editable="share-label">♧ 공유</span></header>
       <div class="settings" id="settings" hidden><div class="settings-title" data-editable="settings-title">설정</div><label class="setting-row"><input id="notifyToggle" type="checkbox" checked><span data-editable="notify-label">메시지 알림</span></label><button class="permission-button" id="permissionButton" type="button">브라우저 알림 허용</button><small class="settings-note" data-editable="settings-note">앱을 닫아도 새 메시지를 알려줍니다.</small></div>
       <section class="conversation" id="conversation" aria-label="대화 내용"><div class="messages" id="messages"><div class="empty" id="empty"><span data-editable="empty-title">무엇을 도와드릴까요?</span><small data-editable="empty-caption">메시지를 입력해 대화를 시작하세요.</small></div><div class="typing" id="typing" role="status" data-editable="typing-label" hidden>답변 작성 중</div></div></section>
-      <div class="composer-wrap"><div class="notice" id="notice" data-editable="notice" hidden></div><form class="composer" id="form"><textarea id="messageInput" placeholder="Codex와 함께 작업하세요" aria-label="메시지 입력" rows="1" maxlength="4000"></textarea><div class="composer-actions"><button class="composer-plus" type="button" aria-label="더하기">+</button><span class="access" data-editable="access-label">ⓘ 전체 액세스</span><span class="composer-spacer"></span><span class="model" data-editable="model-label">GPT-6 Sol Light⌄</span><span class="mic" aria-hidden="true">♩</span><button class="send" id="send" type="submit" aria-label="메시지 보내기" disabled>↑</button></div></form></div>
+      <div class="composer-wrap"><div class="notice" id="notice" data-editable="notice" hidden></div><form class="composer" id="form"><textarea id="messageInput" placeholder="ChatGPT에게 물어보세요" aria-label="메시지 입력" rows="1" maxlength="4000"></textarea><div class="composer-actions"><button class="composer-plus" type="button" aria-label="더하기">+</button><span class="access" data-editable="access-label">ⓘ 전체 액세스</span><span class="composer-spacer"></span><span class="model" data-editable="model-label">Instant⌄</span><span class="mic" aria-hidden="true">♩</span><button class="send" id="send" type="submit" aria-label="메시지 보내기" disabled>↑</button></div></form></div>
     </main>
   </div>
   <div class="toast" id="toast" role="status" hidden><div class="toast-title" data-editable="toast-title">새 메시지</div><div class="toast-body" id="toastBody"></div></div>

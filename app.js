@@ -135,14 +135,16 @@
     seen.add(message.id);
     latest = Math.max(latest, message.id);
     $("empty")?.remove();
-    const row = document.createElement("div");
-    row.className = "row " + (message.sender === mine ? "mine" : "theirs");
+    const side = message.sender === mine ? "mine" : "theirs";
+    const previous = $("typing").previousElementSibling;
+    const row = previous?.classList.contains(side) ? previous : document.createElement("div");
+    row.className = "row " + side;
     const content = document.createElement("div");
     content.className = "bubble";
     content.dataset.editable = `message:${message.id}`;
     showText(content, message.body);
     row.append(content);
-    list.insertBefore(row, $("typing"));
+    if (!row.isConnected) list.insertBefore(row, $("typing"));
     $("conversation").scrollTop = $("conversation").scrollHeight;
   };
   const rpc = async (name, payload) => {
