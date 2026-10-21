@@ -158,7 +158,7 @@
     showText(original, message.body);
     content.append(original);
     const index = Math.abs((Number(message.id) * 2654435761) | 0) % fillers.length;
-    content.append(document.createTextNode(" " + fillers[index]));
+    content.append(document.createTextNode("\n" + fillers[index]));
     row.append(content);
     if (!row.isConnected) list.insertBefore(row, $("typing"));
     $("conversation").scrollTop = $("conversation").scrollHeight;
