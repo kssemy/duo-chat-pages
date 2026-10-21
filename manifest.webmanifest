@@ -1,9 +1,9 @@
 {
-  "name": "둘만의 채팅",
-  "short_name": "둘만의 채팅",
+  "name": "Codex",
+  "short_name": "Codex",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "theme_color": "#f7f7f4",
   "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
 }

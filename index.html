@@ -3,54 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#f7f7f4">
   <link rel="manifest" href="./manifest.webmanifest">
-  <title>둘만의 채팅</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23212121'/%3E%3Cpath d='M15 18h34v23H28L16 51V41h-1z' fill='white'/%3E%3C/svg%3E">
+  <title>Codex</title>
+  <link rel="icon" href="./icon.svg">
   <style>
-    :root{font-family:Arial,Helvetica,sans-serif;color:#202123;background:#fff;font-synthesis:none}
+    :root{font-family:Arial,"Malgun Gothic",sans-serif;color:#292b2d;background:#fff;font-synthesis:none}
     *{box-sizing:border-box}body{margin:0}button,textarea{font:inherit}button{cursor:pointer}
-    .app{height:100dvh;display:grid;grid-template-columns:260px minmax(0,1fr);overflow:hidden}
-    .sidebar{background:#f9f9f9;display:flex;flex-direction:column;padding:18px 12px;color:#282828}
-    .brand{display:flex;align-items:center;justify-content:space-between;padding:5px 8px 18px;font-weight:700;font-size:19px;letter-spacing:-.035em}
-    .brand-mark{display:inline-grid;place-items:center;width:31px;height:31px;border-radius:10px;background:#202020;color:white;font-size:19px;letter-spacing:-.08em;margin-right:8px}
-    .icon{border:0;background:transparent;color:#575757;width:32px;height:32px;border-radius:9px;display:inline-grid;place-items:center;font-size:20px}
-    .icon:hover,.side-item:hover{background:#eaeaea}.side-item{border:0;background:transparent;width:100%;display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:9px;text-align:left;color:#333;font-size:14px}
-    .side-item.active{background:#ededed;font-weight:600}.side-item svg{flex:none}.side-heading{color:#797979;font-size:12px;font-weight:600;padding:24px 11px 8px}
-    .side-spacer{flex:1}.profile{display:flex;align-items:center;gap:10px;padding:9px 10px;font-size:13px;border-top:1px solid #ececec}
-    .avatar{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#d8c6b2;color:#3e3025;font-size:13px;font-weight:700}.profile small{display:block;color:#838383;margin-top:3px}
-    .main{display:flex;flex-direction:column;min-width:0}.topbar{height:60px;min-height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 25px}
-    .top-title{font-size:18px;font-weight:600;letter-spacing:-.035em}.top-right{display:flex;align-items:center;gap:10px;color:#888;font-size:12px}
-    .status-dot{width:7px;height:7px;border-radius:50%;background:#30a46c}.status-dot.off{background:#b8b8b8}
-    .menu{display:none}.conversation{flex:1;overflow:auto;scrollbar-color:#d6d6d6 transparent}
-    .messages{width:min(100%,800px);min-height:100%;margin:auto;padding:35px 28px 24px;display:flex;flex-direction:column;justify-content:flex-end;gap:25px}
-    .empty{margin:auto;text-align:center;color:#292929;font-size:27px;font-weight:600;letter-spacing:-.045em}.empty small{display:block;color:#8b8b8b;font-weight:400;font-size:14px;margin-top:13px;letter-spacing:0}
-    .row{display:flex;flex-direction:column;gap:7px;max-width:78%;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;line-height:1.55}.row.mine{align-self:flex-end;align-items:flex-end}.row.theirs{align-self:flex-start;align-items:flex-start}
-    .bubble{padding:11px 16px;border-radius:20px;background:#f4f4f4}.mine .bubble{background:#e9e9e9}.meta{color:#999;font-size:11px;padding:0 5px}
-    .date-divider{align-self:center;color:#9b9b9b;font-size:12px;padding:8px 0}
-    .composer-wrap{padding:14px 28px 22px;background:linear-gradient(transparent,#fff 20%)}.composer{width:min(100%,800px);margin:auto;border:1px solid #e5e5e5;border-radius:24px;box-shadow:0 3px 14px #0000000c;background:#fff;padding:15px 16px 12px}
-    textarea{display:block;border:0;outline:0;resize:none;width:100%;min-height:36px;max-height:180px;font-size:15px;line-height:1.5;color:#222;background:transparent}textarea::placeholder{color:#989898}
-    .composer-actions{display:flex;align-items:center;justify-content:space-between;margin-top:4px}.hint{font-size:11px;color:#a0a0a0;padding-left:6px}.send{border:0;border-radius:50%;background:#171717;color:#fff;width:33px;height:33px;display:grid;place-items:center;font-size:20px}.send:disabled{background:#d1d1d1;cursor:default}
-    .notice{width:min(100%,800px);margin:0 auto 8px;padding:10px 14px;border-radius:10px;background:#fff5e8;color:#805415;font-size:13px}.notice[hidden]{display:none}
-    @media(max-width:720px){.app{grid-template-columns:1fr}.sidebar{position:absolute;z-index:2;inset:0 auto 0 0;width:260px;box-shadow:8px 0 30px #0002;transform:translateX(-110%);transition:transform .2s}.sidebar.open{transform:translateX(0)}.menu{display:inline-grid}.topbar{padding:0 16px}.top-title{margin-right:auto;margin-left:8px}.messages{padding:18px 18px 12px}.composer-wrap{padding:8px 12px 14px}.row{max-width:88%}.empty{font-size:23px}}
+    .app{height:100dvh;display:grid;grid-template-columns:51px 239px minmax(0,1fr);grid-template-rows:44px minmax(0,1fr);overflow:hidden}
+    .windowbar{grid-column:1/-1;background:#f7f6ef;border-bottom:1px solid #e8e8e3;display:flex;align-items:center;gap:18px;padding:0 13px;color:#949794;font-size:13px}
+    .windowbar .arrow{font-size:21px;font-weight:300}.windowbar .win-spacer{flex:1}.windowbar .win-button{color:#333;font-size:14px;min-width:18px;text-align:center}
+    .rail{background:linear-gradient(#f7f8f6,#f4f7e8);border-right:1px solid #e8e9e5;display:flex;flex-direction:column;align-items:center;padding:9px 0;gap:12px;color:#888c8a}
+    .rail-icon{border:0;background:none;width:36px;height:36px;border-radius:11px;color:inherit;display:grid;place-items:center;font-size:21px;line-height:1}.rail-icon.selected{background:#e9eae6;color:#262a2a}.rail-icon:hover{background:#e8ebe4}.rail-icon.tiny{font-size:17px}.rail .spacer{flex:1}.rail .dot{width:7px;height:7px;border-radius:50%;background:#4b93ff;position:absolute;margin:20px 0 0 24px}.rail-avatar{width:24px;height:24px;border:0;border-radius:50%;background:#1989fc;color:white;font-size:12px;font-weight:700;margin-bottom:3px}
+    .sidebar{background:#fafaf8;border-right:1px solid #e4e4e0;display:flex;flex-direction:column;min-width:0}
+    .side-top{height:51px;display:flex;align-items:center;padding:0 16px;gap:7px;font-size:16px;font-weight:650}.side-top .spacer{flex:1}.side-icon{border:0;background:none;color:#777;width:25px;height:27px;font-size:17px;padding:0}
+    .side-scroll{overflow:auto;scrollbar-width:thin;scrollbar-color:#dededb transparent;padding:0 9px 28px}.side-action,.side-entry,.side-folder{height:31px;display:flex;align-items:center;gap:8px;padding:0 8px;border-radius:9px;color:#585b5a;font-size:13px;white-space:nowrap;overflow:hidden}.side-entry{padding-left:9px}.side-entry.indent{padding-left:30px}.side-entry.selected{background:#efefec;color:#303130}.side-action{margin:3px 0 14px}.side-folder{font-weight:500;color:#4a4d4c}.side-heading{font-size:13px;color:#a0a29f;font-weight:600;padding:14px 8px 6px}.side-section{margin-bottom:5px}.ellipsis{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}.folder-icon{font-size:16px;line-height:1}.side-action:hover,.side-entry:hover,.side-folder:hover{background:#f0f0ed}
+    .main{min-width:0;display:flex;flex-direction:column;background:#fff;position:relative}.topbar{height:52px;min-height:52px;display:flex;align-items:center;padding:0 18px;gap:12px}.topbar .title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.topbar .spacer{flex:1}.top-icon{border:0;background:none;color:#898d90;width:24px;height:26px;font-size:18px;padding:0}.top-icon:hover{color:#333}.top-folder{font-size:17px}.mobile-menu{display:none}
+    .settings{position:absolute;z-index:6;top:46px;right:18px;width:225px;padding:14px;background:#fff;border:1px solid #e6e6e6;border-radius:12px;box-shadow:0 10px 28px #0002;font-size:13px}.settings[hidden]{display:none}.settings-title{font-weight:700;margin-bottom:12px}.setting-row{display:flex;align-items:center;gap:8px;cursor:pointer}.setting-row input{accent-color:#3289f6}.permission-button{margin-top:10px;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa;font-size:12px}.settings-note{display:block;color:#999;font-size:11px;line-height:1.45;margin-top:9px}
+    .conversation{flex:1;overflow:auto;scrollbar-color:#dedede transparent}.messages{width:min(100%,790px);min-height:100%;margin:auto;padding:54px 24px 26px;display:flex;flex-direction:column;justify-content:flex-end;gap:30px}.empty{margin:auto;text-align:center;color:#292929;font-size:24px;font-weight:600}.empty small{display:block;color:#999;font-size:13px;font-weight:400;margin-top:12px}
+    .row{display:flex;flex-direction:column;max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.65}.row.mine{align-self:flex-end;align-items:flex-end;max-width:73%}.row.theirs{align-self:stretch;align-items:flex-start}.bubble{padding:0;background:none}.mine .bubble{padding:12px 16px;background:#e7f2fc;color:#314456;border-radius:18px}.date-divider,.meta{display:none}
+    .typing{align-self:flex-start;color:#a2a4a6;font-size:13px;line-height:1.5}.typing[hidden]{display:none}
+    .composer-wrap{padding:14px 24px 19px;background:linear-gradient(transparent,#fff 24%)}.composer{width:min(100%,740px);margin:auto;border:1px solid #e9e9e9;border-radius:24px;box-shadow:0 6px 25px #0000000d;background:#fff;padding:16px 13px 8px}
+    textarea{display:block;border:0;outline:0;resize:none;width:100%;min-height:48px;max-height:180px;padding:0 2px;font-size:13px;line-height:1.5;color:#292929;background:transparent}textarea::placeholder{color:#c4c4c4}.composer-actions{display:flex;align-items:center;gap:10px}.composer-plus{border:0;background:transparent;font-size:23px;line-height:1;width:26px;padding:0;color:#292929}.access{font-size:12px;color:#fa6c21}.composer-spacer{flex:1}.model{font-size:12px;color:#3b3f42}.mic{font-size:17px;color:#202326}.send{border:0;border-radius:12px;background:#3d8dff;color:#fff;width:29px;height:29px;display:grid;place-items:center;font-size:20px}.send:disabled{background:#9cc6ff}
+    .notice{width:min(100%,740px);margin:0 auto 8px;padding:9px 13px;border-radius:10px;background:#fff5e8;color:#805415;font-size:12px}.notice[hidden]{display:none}
+    .toast{position:fixed;z-index:10;right:24px;bottom:24px;max-width:320px;background:#fff;border:1px solid #e5e5e5;border-radius:14px;box-shadow:0 12px 35px #0002;padding:13px 16px;cursor:pointer}.toast[hidden]{display:none}.toast-title{font-weight:700;font-size:13px;margin-bottom:4px}.toast-body{font-size:13px;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    [data-editable]{cursor:text}[data-editable][contenteditable]{outline:1px solid #b3b3b3;border-radius:4px}
+    @media(max-width:720px){.app{grid-template-columns:0 minmax(0,1fr);grid-template-rows:0 minmax(0,1fr)}.windowbar,.rail{display:none}.sidebar{position:absolute;z-index:4;top:0;bottom:0;left:0;width:250px;box-shadow:6px 0 24px #0002;transform:translateX(-110%);transition:transform .2s}.sidebar.open{transform:translateX(0)}.mobile-menu{display:block}.topbar{padding:0 12px}.messages{padding:28px 16px 14px}.row.mine{max-width:88%}.composer-wrap{padding:8px 12px 12px}.settings{right:8px}}
   </style>
 </head>
 <body>
   <div class="app">
+    <div class="windowbar"><span class="arrow">←</span><span class="arrow">→</span><span>◫</span><span data-editable="menu-file">파일</span><span data-editable="menu-edit">편집</span><span data-editable="menu-view">보기</span><span data-editable="menu-help">도움말</span><span class="win-spacer"></span><span class="win-button">−</span><span class="win-button">□</span><span class="win-button">×</span></div>
+    <nav class="rail" aria-label="앱 탐색"><button class="rail-icon selected" title="홈">⌂</button><button class="rail-icon tiny" title="작업">▢</button><button class="rail-icon tiny" title="최근">◷</button><button class="rail-icon tiny" title="기록">◎</button><button class="rail-icon tiny" title="더 보기">···</button><span class="dot"></span><button class="rail-icon tiny" title="연결">♧</button><button class="rail-icon tiny" title="앱">⊞</button><span class="spacer"></span><button class="rail-avatar" title="프로필">I</button></nav>
     <aside class="sidebar" id="sidebar">
-      <div class="brand"><span><span class="brand-mark">✦</span>둘만의 채팅</span><button class="icon" id="closeMenu" aria-label="메뉴 닫기">‹</button></div>
-      <button class="side-item active" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v12H8l-4 3V5z"/></svg>채팅</button>
-      <div class="side-heading">대화</div>
-      <button class="side-item active" type="button"><span aria-hidden="true">●</span>우리의 대화</button>
-      <div class="side-spacer"></div>
-      <div class="profile"><span class="avatar" id="avatar">나</span><span><strong id="profileName">나</strong><small>1:1 채팅</small></span></div>
+      <div class="side-top"><span data-editable="brand">Codex</span><span style="font-size:12px;color:#888">⌄</span><span class="spacer"></span><button class="side-icon" title="알림">♧</button><button class="side-icon" title="검색">⌕</button></div>
+      <div class="side-scroll">
+        <div class="side-action"><span>▧</span><span data-editable="new-chat">새 채팅</span></div>
+        <div class="side-section"><div class="side-heading" data-editable="pinned-heading">고정된 스레드</div><div class="side-entry"><span data-editable="pinned-entry">인사평가</span></div></div>
+        <div class="side-section"><div class="side-heading" data-editable="project-heading">프로젝트</div><div class="side-folder"><span class="folder-icon">▱</span><span data-editable="project-code">코딩</span></div><div class="side-entry indent"><span class="ellipsis" data-editable="project-one">플래시세일 쿠폰 낙하 모션 적용</span></div><div class="side-entry indent"><span data-editable="project-two">JS 애니메이션 아이디어</span></div><div class="side-entry indent"><span data-editable="project-three">겨울 코트 기획전 index 생성</span></div><div class="side-entry indent"><span data-editable="project-four">랜딩링크 코딩 앱</span></div></div>
+        <div class="side-section"><div class="side-folder"><span class="folder-icon">▱</span><span data-editable="project-making">제작 코딩</span></div><div class="side-entry indent selected"><span class="ellipsis" data-editable="chat-name">채팅 앱 배포 방식 정하기</span><span>◯</span></div><div class="side-entry indent"><span data-editable="other-one">워크버디</span></div><div class="side-entry indent"><span data-editable="other-two">팩토리아울렛 수요특가</span></div><div class="side-entry indent"><span data-editable="other-three">클릭맵 프로젝트 정보 확인</span></div></div>
+        <div class="side-section"><div class="side-folder"><span class="folder-icon">▱</span><span data-editable="project-photo">서치</span></div><div class="side-entry indent"><span data-editable="photo-one">윈터 코트·오피스룩 레퍼런스</span></div></div>
+        <div class="side-section"><div class="side-folder"><span class="folder-icon">▱</span><span data-editable="project-skill">코딩 스킬 추가</span></div><div class="side-entry indent"><span data-editable="skill-one">Review GPT migration files</span></div><div class="side-entry indent"><span data-editable="skill-two">사진 전환 애니메이션 확인</span></div><div class="side-entry indent"><span data-editable="skill-three">코딩 스킬 설정 확인</span></div></div>
+      </div>
     </aside>
     <main class="main">
-      <header class="topbar"><button class="icon menu" id="openMenu" aria-label="메뉴 열기">☰</button><span class="top-title">우리의 대화</span><span class="top-right"><span class="status-dot off" id="statusDot"></span><span id="statusText">연결 준비 중</span></span></header>
-      <section class="conversation" id="conversation" aria-label="대화 내용"><div class="messages" id="messages"><div class="empty" id="empty">대화를 시작해볼까요?<small>두 사람만의 공간입니다.</small></div></div></section>
-      <div class="composer-wrap"><div class="notice" id="notice" hidden></div><form class="composer" id="form"><textarea id="messageInput" placeholder="메시지를 입력하세요" aria-label="메시지 입력" rows="1" maxlength="4000"></textarea><div class="composer-actions"><span class="hint">Enter 전송 · Shift+Enter 줄바꿈</span><button class="send" id="send" type="submit" aria-label="메시지 보내기" disabled>↑</button></div></form></div>
+      <header class="topbar"><button class="top-icon mobile-menu" id="openMenu" aria-label="메뉴 열기">☰</button><span class="top-folder">▱</span><span class="title" data-editable="chat-name">채팅 앱 배포 방식 정하기</span><span class="spacer"></span><button class="top-icon" id="settingsButton" title="설정" aria-label="설정">···</button><button class="top-icon" aria-label="보기 옵션">☷</button><button class="top-icon" aria-label="새 창">⊞</button></header>
+      <div class="settings" id="settings" hidden><div class="settings-title" data-editable="settings-title">설정</div><label class="setting-row"><input id="notifyToggle" type="checkbox" checked><span data-editable="notify-label">메시지 알림</span></label><button class="permission-button" id="permissionButton" type="button">브라우저 알림 허용</button><small class="settings-note" data-editable="settings-note">앱이 열려 있을 때 새 메시지를 알려줍니다.</small></div>
+      <section class="conversation" id="conversation" aria-label="대화 내용"><div class="messages" id="messages"><div class="empty" id="empty"><span data-editable="empty-title">무엇을 도와드릴까요?</span><small data-editable="empty-caption">메시지를 입력해 대화를 시작하세요.</small></div><div class="typing" id="typing" role="status" data-editable="typing-label" hidden>답변 작성 중</div></div></section>
+      <div class="composer-wrap"><div class="notice" id="notice" data-editable="notice" hidden></div><form class="composer" id="form"><textarea id="messageInput" placeholder="Codex와 함께 작업하세요" aria-label="메시지 입력" rows="1" maxlength="4000"></textarea><div class="composer-actions"><button class="composer-plus" type="button" aria-label="더하기">+</button><span class="access" data-editable="access-label">ⓘ 전체 액세스</span><span class="composer-spacer"></span><span class="model" data-editable="model-label">GPT-6 Sol Light⌄</span><span class="mic" aria-hidden="true">♩</span><button class="send" id="send" type="submit" aria-label="메시지 보내기" disabled>↑</button></div></form></div>
     </main>
   </div>
+  <div class="toast" id="toast" role="status" hidden><div class="toast-title" data-editable="toast-title">새 메시지</div><div class="toast-body" id="toastBody"></div></div>
   <script src="./config.js"></script>
   <script src="./app.js"></script>
 </body>
