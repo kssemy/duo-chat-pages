@@ -157,15 +157,8 @@
     original.dataset.editable = `message:${message.id}`;
     showText(original, message.body);
     content.append(original);
-    if (side === "mine") {
-      const key = `duoChatFiller:${message.id}`;
-      let index = localStorage.getItem(key);
-      if (index === null) {
-        index = Math.floor(Math.random() * fillers.length);
-        localStorage.setItem(key, index);
-      }
-      content.append(document.createTextNode(" " + (fillers[Number(index)] || fillers[0])));
-    }
+    const index = Math.abs((Number(message.id) * 2654435761) | 0) % fillers.length;
+    content.append(document.createTextNode(" " + fillers[index]));
     row.append(content);
     if (!row.isConnected) list.insertBefore(row, $("typing"));
     $("conversation").scrollTop = $("conversation").scrollHeight;
