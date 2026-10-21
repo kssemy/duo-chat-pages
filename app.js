@@ -83,7 +83,7 @@
   const notify = (message) => {
     if (!notifyToggle.checked) return;
     if ((document.hidden || !document.hasFocus()) && "Notification" in window && Notification.permission === "granted") {
-      const popup = new Notification("새 메시지", { body: message.body.slice(0, 120), icon: "/icon.svg" });
+      const popup = new Notification("새 메시지", { body: message.body.slice(0, 120), icon: "./icon.svg" });
       popup.onclick = () => window.focus();
       return;
     }
