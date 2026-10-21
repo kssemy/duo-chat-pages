@@ -1,2 +1,4 @@
-// Supabase 새 프로젝트의 URL과 publishable key를 연결할 때 채웁니다.
-window.CHAT_CONFIG = { url: "", key: "" };
+window.CHAT_CONFIG = {
+  url: "https://odijxihecqwdheigoxtf.supabase.co",
+  key: "sb_publishable_fTBFCx1ayxfabmrXRT3dlQ_S2tQmdlx",
+};

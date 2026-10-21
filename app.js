@@ -2,11 +2,11 @@
   const $ = (id) => document.getElementById(id);
   const config = window.CHAT_CONFIG || {};
   const token = new URLSearchParams(location.hash.slice(1)).get("token") || "";
-  const role = new URLSearchParams(location.hash.slice(1)).get("role") || "";
-  const mine = role === "owner" ? "owner" : role === "guest" ? "guest" : "";
+  let mine = "";
   const input = $("messageInput");
   const list = $("messages");
   const seen = new Set();
+  const metas = new Map();
   let latest = 0;
   let pending = false;
   let ready = false;
@@ -43,6 +43,7 @@
     const meta = document.createElement("div");
     meta.className = "meta";
     meta.textContent = (message.sender === mine ? "나" : "상대방") + " · " + displayTime(message.created_at);
+    if (message.sender === mine) metas.set(message.id, meta);
     row.append(bubble, meta);
     list.append(row);
     $("conversation").scrollTop = $("conversation").scrollHeight;
@@ -58,8 +59,15 @@
   };
   const refresh = async () => {
     try {
-      const messages = await rpc("chat_read", { p_token: token, p_after: latest });
-      messages.forEach(render);
+      const result = await rpc("chat_sync", { p_token: token, p_after: latest });
+      mine = result.me;
+      $("profileName").textContent = mine === "owner" ? "나" : "상대방";
+      $("avatar").textContent = mine === "owner" ? "나" : "상";
+      result.messages.forEach(render);
+      for (const [id, meta] of metas) {
+        const label = meta.textContent.replace(/ · 읽음$/, "");
+        meta.textContent = label + (id <= result.other_read ? " · 읽음" : "");
+      }
       ready = true;
       status(true, "연결됨");
       notice("");
@@ -85,11 +93,9 @@
     } catch (error) { notice(error.message); }
     finally { pending = false; input.dispatchEvent(new Event("input")); input.focus(); }
   };
-  if (!token || !mine) notice("올바른 초대 링크로 접속해주세요.");
+  if (!token) notice("올바른 초대 링크로 접속해주세요.");
   else if (!config.url || !config.key) notice("새 Supabase 프로젝트 연결을 준비하고 있습니다.");
   else {
-    $("profileName").textContent = mine === "owner" ? "나" : "상대방";
-    $("avatar").textContent = mine === "owner" ? "나" : "상";
     refresh();
     setInterval(refresh, 3000);
   }
