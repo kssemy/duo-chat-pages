@@ -56,6 +56,8 @@
   let initialized = false;
   let typingActive = false;
   let typingIdleTimer;
+  let pushInitialized = false;
+  let pushReady = false;
 
   input.placeholder = edits["composer-placeholder"] || input.placeholder;
   input.addEventListener("dblclick", () => {
@@ -74,15 +76,26 @@
   });
   const notifyToggle = $("notifyToggle");
   notifyToggle.checked = localStorage.getItem("duoChatNotifications") !== "off";
-  notifyToggle.onchange = () => localStorage.setItem("duoChatNotifications", notifyToggle.checked ? "on" : "off");
+  const pushSupported = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+  notifyToggle.onchange = async () => {
+    localStorage.setItem("duoChatNotifications", notifyToggle.checked ? "on" : "off");
+    if (!pushSupported) return;
+    if (!notifyToggle.checked) await disablePush().catch(() => notice("알림 구독을 해제하지 못했습니다."));
+    else if (Notification.permission === "granted") enablePush().catch(() => notice("브라우저 알림을 설정하지 못했습니다."));
+  };
   const permissionButton = $("permissionButton");
-  if (!("Notification" in window) || Notification.permission === "granted") permissionButton.hidden = true;
   permissionButton.onclick = async () => {
-    if ("Notification" in window && await Notification.requestPermission() === "granted") permissionButton.hidden = true;
+    if (!ready || !pushSupported) return notice("이 브라우저에서는 푸시 알림을 사용할 수 없습니다.");
+    if (await Notification.requestPermission() !== "granted") return notice("브라우저에서 알림을 허용해주세요.");
+    notifyToggle.checked = true;
+    localStorage.setItem("duoChatNotifications", "on");
+    try { await enablePush(); notice(""); }
+    catch { notice("브라우저 알림을 설정하지 못했습니다."); }
   };
   let toastTimer;
   const notify = (message) => {
     if (!notifyToggle.checked) return;
+    if ((document.hidden || !document.hasFocus()) && pushReady) return;
     if ((document.hidden || !document.hasFocus()) && "Notification" in window && Notification.permission === "granted") {
       const popup = new Notification("새 메시지", { body: message.body.slice(0, 120), icon: "./icon.svg" });
       popup.onclick = () => window.focus();
@@ -141,6 +154,33 @@
     if (!response.ok) throw new Error("채팅 서버에 연결하지 못했습니다. 잠시 후 다시 시도해주세요.");
     return response.status === 204 ? null : response.json();
   };
+  const enablePush = async () => {
+    if (!pushSupported || !notifyToggle.checked || Notification.permission !== "granted") return;
+    const registration = await navigator.serviceWorker.register("./sw.js");
+    const key = config.vapidPublicKey.replace(/-/g, "+").replace(/_/g, "/");
+    const applicationServerKey = Uint8Array.from(atob(key.padEnd(Math.ceil(key.length / 4) * 4, "=")), (char) => char.charCodeAt(0));
+    const subscription = await registration.pushManager.getSubscription()
+      || await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey });
+    if (!notifyToggle.checked) return disablePush();
+    const keys = subscription.toJSON().keys;
+    await rpc("chat_push_subscribe", {
+      p_token: token, p_endpoint: subscription.endpoint, p_p256dh: keys.p256dh,
+      p_auth: keys.auth, p_enabled: true,
+    });
+    pushReady = true;
+    permissionButton.hidden = true;
+  };
+  const disablePush = async () => {
+    pushReady = false;
+    const subscription = await (await navigator.serviceWorker.getRegistration())?.pushManager.getSubscription();
+    if (!subscription) return;
+    try {
+      await rpc("chat_push_subscribe", {
+        p_token: token, p_endpoint: subscription.endpoint, p_p256dh: "", p_auth: "", p_enabled: false,
+      });
+    } finally { await subscription.unsubscribe(); }
+    permissionButton.hidden = false;
+  };
   const refresh = async () => {
     if (syncing) return;
     syncing = true;
@@ -155,6 +195,12 @@
       ready = true;
       notice("");
       input.dispatchEvent(new Event("input"));
+      if (!pushInitialized) {
+        pushInitialized = true;
+        if (notifyToggle.checked && pushSupported && Notification.permission === "granted") {
+          enablePush().catch(() => notice("브라우저 알림을 설정하지 못했습니다."));
+        }
+      }
     } catch (error) {
       ready = false;
       notice(error.message);
