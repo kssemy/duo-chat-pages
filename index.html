@@ -45,8 +45,10 @@
     .topbar{height:50px;min-height:50px;padding:0 16px}.topbar .title,.top-folder{display:none}
     .top-icon{color:#202020}.share{font-size:13px;color:#333;white-space:nowrap}
     .messages{width:min(100%,736px);padding:22px 22px 16px;gap:25px;justify-content:flex-start}
-    .row{font-size:13.5px;line-height:1.65;gap:16px}.row.theirs{max-width:100%}.row.mine{max-width:67%;gap:6px}
-    .mine .bubble{background:#e7f2fc;color:#1c3852;border-radius:16px;padding:8px 12px}
+    .row{font-size:13.5px;line-height:1.65;gap:16px}.row.theirs{max-width:100%}.row.mine{max-width:100%;align-self:stretch;align-items:flex-start}
+    .mine .bubble{align-self:flex-end;max-width:67%;background:#e7f2fc;color:#1c3852;border-radius:16px;padding:8px 12px}
+    .fact{align-self:stretch;font-size:13.5px;line-height:1.75;color:#292b2d}
+    .fact strong{display:block;font-size:15px;margin-bottom:10px}.fact p{margin:0 0 12px}.fact a{font-size:11px;color:#929292;text-decoration:none}.fact a:hover{text-decoration:underline}
     .typing{font-size:13px;color:#9a9a9a}
     .composer-wrap{padding:7px 22px 20px;background:#fff}
     .composer{width:min(100%,693px);border-radius:25px;padding:7px 11px;box-shadow:0 2px 14px #0000000a;display:flex;align-items:center;gap:12px}
@@ -54,7 +56,7 @@
     .composer-actions{display:contents}.composer-plus{order:1;font-size:27px;width:26px}.composer-spacer,.access{display:none}
     .model{order:3;color:#888;font-size:12px;white-space:nowrap}.mic{order:4}.send{order:5;border-radius:50%;width:31px;height:31px}
     .notice{width:min(100%,693px)}
-    @media(max-width:720px){.app{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}.sidebar{width:280px}.mobile-menu{display:block}.topbar{padding:0 12px}.messages{padding:20px 16px}.row.mine{max-width:88%}.composer-wrap{padding:8px 12px 12px}.model{display:none}}
+    @media(max-width:720px){.app{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}.sidebar{width:280px}.mobile-menu{display:block}.topbar{padding:0 12px}.messages{padding:20px 16px}.row.mine{max-width:100%}.mine .bubble{max-width:88%}.composer-wrap{padding:8px 12px 12px}.model{display:none}}
   </style>
 </head>
 <body>
@@ -84,6 +86,6 @@
   </div>
   <div class="toast" id="toast" role="status" hidden><div class="toast-title" data-editable="toast-title">새 메시지</div><div class="toast-body" id="toastBody"></div></div>
   <script src="./config.js"></script>
-  <script src="./app.js?v=20261021-2"></script>
+  <script src="./app.js?v=20261021-3"></script>
 </body>
 </html>
