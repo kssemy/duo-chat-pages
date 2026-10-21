@@ -55,6 +55,7 @@
   let syncing = false;
   let initialized = false;
   let typingActive = false;
+  let typingIdleTimer;
 
   input.placeholder = edits["composer-placeholder"] || input.placeholder;
   input.addEventListener("dblclick", () => {
@@ -94,18 +95,21 @@
     toastTimer = setTimeout(() => { $("toast").hidden = true; }, 6000);
   };
 
-  input.oninput = () => {
+  input.oninput = (event) => {
     input.style.height = "48px";
     input.style.height = Math.min(input.scrollHeight, 180) + "px";
     $("send").disabled = !ready || pending || !input.value.trim();
-    if (ready && !pending && typingActive !== !!input.value.trim()) setTyping(!!input.value.trim());
+    if (!event.isTrusted || !ready || pending) return;
+    clearTimeout(typingIdleTimer);
+    const active = !!input.value.trim();
+    if (typingActive !== active) setTyping(active);
+    if (active) typingIdleTimer = setTimeout(() => setTyping(false), 2000);
   };
   const setTyping = (active) => {
     typingActive = active;
     rpc("chat_set_typing", { p_token: token, p_typing: active }).catch(() => {});
   };
-  input.onblur = () => { if (typingActive) setTyping(false); };
-  input.onfocus = () => { if (ready && input.value.trim()) setTyping(true); };
+  input.onblur = () => { clearTimeout(typingIdleTimer); if (typingActive) setTyping(false); };
   input.onkeydown = (event) => {
     if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
       event.preventDefault();
@@ -164,6 +168,7 @@
     pending = true;
     $("send").disabled = true;
     try {
+      clearTimeout(typingIdleTimer);
       if (typingActive) setTyping(false);
       await rpc("chat_send", { p_token: token, p_body: body });
       input.value = "";
