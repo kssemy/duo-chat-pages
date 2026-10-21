@@ -1,15 +1,22 @@
 (() => {
   const $ = (id) => document.getElementById(id);
   const config = window.CHAT_CONFIG || {};
-  const token = new URLSearchParams(location.hash.slice(1)).get("token") || "";
+  const linkToken = new URLSearchParams(location.hash.slice(1)).get("token") || "";
+  if (linkToken) {
+    localStorage.setItem("duoChatToken", linkToken);
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+  const token = linkToken || localStorage.getItem("duoChatToken") || "";
   let mine = "";
   const input = $("messageInput");
   const list = $("messages");
   const seen = new Set();
   const metas = new Map();
   let latest = 0;
+  let lastDate = "";
   let pending = false;
   let ready = false;
+  let syncing = false;
 
   $("openMenu").onclick = () => $("sidebar").classList.add("open");
   $("closeMenu").onclick = () => $("sidebar").classList.remove("open");
@@ -35,6 +42,14 @@
     seen.add(message.id);
     latest = Math.max(latest, message.id);
     $("empty")?.remove();
+    const date = new Date(message.created_at).toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric" });
+    if (date !== lastDate) {
+      const divider = document.createElement("div");
+      divider.className = "date-divider";
+      divider.textContent = date;
+      list.append(divider);
+      lastDate = date;
+    }
     const row = document.createElement("div");
     row.className = "row " + (message.sender === mine ? "mine" : "theirs");
     const bubble = document.createElement("div");
@@ -58,6 +73,8 @@
     return response.json();
   };
   const refresh = async () => {
+    if (syncing) return;
+    syncing = true;
     try {
       const result = await rpc("chat_sync", { p_token: token, p_after: latest });
       mine = result.me;
@@ -77,7 +94,7 @@
       status(false, "연결 끊김");
       notice(error.message);
       $("send").disabled = true;
-    }
+    } finally { syncing = false; }
   };
   $("form").onsubmit = async (event) => {
     event.preventDefault();
@@ -97,6 +114,7 @@
   else if (!config.url || !config.key) notice("새 Supabase 프로젝트 연결을 준비하고 있습니다.");
   else {
     refresh();
-    setInterval(refresh, 3000);
+    setInterval(() => { if (!document.hidden) refresh(); }, 3000);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) refresh(); });
   }
 })();
